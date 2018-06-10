@@ -4,16 +4,22 @@ const User = require('../../models/User')
 const bcrypt = require('bcryptjs')
 
 const router = express.Router()
+const registerInputValidator = require('../../validators/users/register')
 
 // @route POST /api/users/register
 // @desc register user
 // @access Public
 router.post('/', (req, res) => {
+  const { errors, isValid } = registerInputValidator(req.body)
+  if (!isValid) {
+    res.status(400).json(errors)
+  }
   const { name, email, password } = req.body
   User.findOne({ email })
     .then((data) => {
       if (data) {
-        return res.status(404).json({ email: 'Email exists.' })
+        errors.email = 'Email existes.'
+        return res.status(404).json(errors)
       }
 
       const avatar = gravatar.url(

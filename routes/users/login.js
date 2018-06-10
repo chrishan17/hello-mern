@@ -2,16 +2,22 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../../models/User')
+const loginInputValidator = require('../../validators/users/login')
 const { secretOrKey } = require('../../config/keys')
 
 const router = express.Router()
 
 router.post('/', (req, res) => {
+  const { errors, isValid } = loginInputValidator(req.body)
+  if (!isValid) {
+    res.status(400).json(errors)
+  }
   const { email, password } = req.body
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        return res.status(404).json({ email: 'User not found' })
+        errors.email = 'User not found'
+        return res.status(404).json(errors)
       }
       return bcrypt
         .compare(password, user.password)
@@ -29,7 +35,8 @@ router.post('/', (req, res) => {
               res.json({ token: `${token}` })
             })
           } else {
-            res.status(400).json({ password: 'Password incorect' })
+            errors.password = 'Password incorect.'
+            res.status(400).json(errors)
           }
         })
         .catch((err) => {
