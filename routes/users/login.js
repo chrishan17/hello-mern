@@ -19,29 +19,24 @@ router.post('/', (req, res) => {
         errors.email = 'User not found'
         return res.status(404).json(errors)
       }
-      return bcrypt
-        .compare(password, user.password)
-        .then((isMatch) => {
-          if (isMatch) {
-            res.status(200)
-            const payload = {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              avatar: user.avatar,
-            }
-            jwt.sign(payload, secretOrKey, { expiresIn: '7d' }, (err, token) => {
-              res.cookie('jwt', `${token}`)
-              res.json({ token: `${token}` })
-            })
-          } else {
-            errors.password = 'Password incorect.'
-            res.status(400).json(errors)
+      return bcrypt.compare(password, user.password).then((isMatch) => {
+        if (isMatch) {
+          res.status(200)
+          const payload = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
           }
-        })
-        .catch((err) => {
-          res.status(500).json({ err: err.message, stack: err.stack })
-        })
+          jwt.sign(payload, secretOrKey, { expiresIn: '7d' }, (err, token) => {
+            res.cookie('jwt', `${token}`)
+            res.json({ token: `${token}` })
+          })
+        } else {
+          errors.password = 'Password incorect.'
+          res.status(400).json(errors)
+        }
+      })
     })
     .catch((err) => {
       res.status(500)

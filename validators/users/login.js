@@ -4,8 +4,7 @@ const { isEmpty, mapValues } = require('lodash')
 module.exports = (data) => {
   const errors = {}
 
-  const { email = '', password = '' } = mapValues(data, (value = '') => value.trim())
-
+  const { email = '', password = '' } = mapValues(data, (value = '') => value)
   if (!isEmail(email)) {
     errors.email = 'Email is invalid.'
   }

@@ -1,5 +1,5 @@
 const {
-  isEmail, isEmpty: isStringEmpty, isLength, equals, escape,
+  isEmail, isEmpty: isStringEmpty, isLength, equals,
 } = require('validator')
 const { isEmpty, mapValues } = require('lodash')
 
@@ -8,8 +8,10 @@ module.exports = (data) => {
 
   const {
     name = '', email = '', password = '', password2 = '',
-  } = mapValues(data, (value = '') =>
-    value.trim())
+  } = mapValues(
+    data,
+    (value = '') => value,
+  )
 
   // validate name
   if (!isLength(name, { min: 4, max: 36 })) {

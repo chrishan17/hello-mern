@@ -1,4 +1,4 @@
-const { Strategy, ExtractJwt } = require('passport-jwt')
+const { Strategy } = require('passport-jwt')
 const { secretOrKey } = require('./keys')
 const User = require('../models/User')
 
